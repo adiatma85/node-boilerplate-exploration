@@ -8,8 +8,6 @@ const articleSchema = mongoose.Schema(
       required: true,
       trim: true,
     },
-  },
-  {
     content: {
       type: String,
       required: true,
