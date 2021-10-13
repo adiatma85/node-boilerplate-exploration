@@ -8,7 +8,25 @@ const createArticle = {
   }),
 };
 
+const getArticles = {};
+
 const getArticle = {
+  params: Joi.object().keys({
+    articleId: Joi.string().custom(objectId),
+  }),
+};
+
+const updateArticle = {
+  params: Joi.object().keys({
+    articleId: Joi.string().custom(objectId),
+  }),
+  body: Joi.object().keys({
+    name: Joi.string(),
+    content: Joi.string(),
+  }),
+};
+
+const deleteArticle = {
   params: Joi.object().keys({
     articleId: Joi.string().custom(objectId),
   }),
@@ -16,5 +34,8 @@ const getArticle = {
 
 module.exports = {
   createArticle,
+  getArticles,
   getArticle,
+  updateArticle,
+  deleteArticle,
 };
