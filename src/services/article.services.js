@@ -13,6 +13,20 @@ const createArticle = async (articleBody) => {
 
 /**
  *
+ * @param {Object} filter - Mongo filter
+ * @param {Object} options - Query options
+ * @param {string} [options.sortBy] - Sort option in the format: sortField:(desc|asc)
+ * @param {number} [options.limit] - Maximum number of results per page (default = 10)
+ * @param {number} [options.page] - Current page (default = 1)
+ * @returns {Promise<QueryResult>}
+ */
+const queryArticle = async (filter, options) => {
+  const articles = await Article.paginate(filter, options);
+  return articles;
+};
+
+/**
+ *
  * @param {ObjectId} id
  * @returns
  */
@@ -54,6 +68,7 @@ const deleteArticleByid = async (articleId) => {
 
 module.exports = {
   createArticle,
+  queryArticle,
   getArticleById,
   updateArticleById,
   deleteArticleByid,
