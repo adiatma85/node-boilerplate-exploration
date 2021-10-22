@@ -120,4 +120,74 @@ describe('Article routes', () => {
       expect(res.body.results[1].id).toBe(articleWithPrefixNameA._id.toHexString());
     });
   });
+
+  describe('GET v1/articles/:artilceId', () => {
+    test('should return 200 and the article object if data is ok', async () => {
+      await insertArticles([rightArticle]);
+
+      const res = await request(app)
+        .get(`/v1/articles/${rightArticle._id}`)
+        .set('Authorization', `Bearer ${adminAccessToken}`)
+        .send()
+        .expect(httpStatus.OK);
+
+      expect(res.body).toEqual({
+        id: rightArticle._id,
+        name: rightArticle.name,
+        content: rightArticle.content,
+      });
+    });
+
+    test('should return 400 if articleId is not valid range mongo id', async () => {
+      await insertArticles([rightArticle]);
+
+      await request(app)
+        .get(`/v1/articles/invalidId`)
+        .set('Authorization', `Bearer ${adminAccessToken}`)
+        .send()
+        .expect(httpStatus.BAD_REQUEST);
+    });
+
+    test('should return 404 error if article not found', async () => {
+      await insertArticles([rightArticle]);
+
+      await request(app)
+        .get(`/v1/articles/${wrongArticle._id}`)
+        .set('Authorization', `Bearer ${adminAccessToken}`)
+        .send()
+        .expect(httpStatus.NOT_FOUND);
+    });
+  });
+
+  describe('DELETE v1/articles/:artilceId', () => {
+    test('should return 200 and the article object if data is ok', async () => {
+      await insertArticles([rightArticle]);
+
+      await request(app)
+        .delete(`/v1/articles/${rightArticle._id}`)
+        .set('Authorization', `Bearer ${adminAccessToken}`)
+        .send()
+        .expect(httpStatus.NO_CONTENT);
+    });
+
+    test('should return 400 if articleId is not valid range mongo id', async () => {
+      await insertArticles([rightArticle]);
+
+      await request(app)
+        .get(`/v1/articles/invalidId`)
+        .set('Authorization', `Bearer ${adminAccessToken}`)
+        .send()
+        .expect(httpStatus.BAD_REQUEST);
+    });
+
+    test('should return 404 error if article not found', async () => {
+      await insertArticles([rightArticle]);
+
+      await request(app)
+        .get(`/v1/articles/${wrongArticle._id}`)
+        .set('Authorization', `Bearer ${adminAccessToken}`)
+        .send()
+        .expect(httpStatus.NOT_FOUND);
+    });
+  });
 });
