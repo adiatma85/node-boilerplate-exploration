@@ -17,7 +17,7 @@ const getArticles = catchAsync(async (req, res) => {
 });
 
 const getArticle = catchAsync(async (req, res) => {
-  const article = await articleService.getArticleById(req.params.id);
+  const article = await articleService.getArticleById(req.params.articleId);
   if (!article) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Article not found');
   }
@@ -30,7 +30,7 @@ const updateArticle = catchAsync(async (req, res) => {
 });
 
 const deleteArticle = catchAsync(async (req, res) => {
-  await articleService.deleteArticleById(req.params.userId);
+  await articleService.deleteArticleByid(req.params.articleId);
   res.status(httpStatus.NO_CONTENT).send();
 });
 

@@ -132,7 +132,7 @@ describe('Article routes', () => {
         .expect(httpStatus.OK);
 
       expect(res.body).toEqual({
-        id: rightArticle._id,
+        id: rightArticle._id.toHexString(),
         name: rightArticle.name,
         content: rightArticle.content,
       });
