@@ -16,6 +16,7 @@ const { adminAccessToken } = require('../fixtures/token.fixture');
 setupTestDB();
 
 describe('Article routes', () => {
+  // POST /v1/articles
   describe('POST /v1/articles', () => {
     let newArticle;
 
@@ -47,6 +48,7 @@ describe('Article routes', () => {
     });
   });
 
+  // GET /v1/articles
   describe('GET /v1/articles', () => {
     test('should return 200 and apply default query options', async () => {
       await insertArticles([rightArticle, wrongArticle]);
@@ -121,6 +123,7 @@ describe('Article routes', () => {
     });
   });
 
+  // GET /v1/articles/:articleId
   describe('GET v1/articles/:artilceId', () => {
     test('should return 200 and the article object if data is ok', async () => {
       await insertArticles([rightArticle]);
@@ -136,6 +139,12 @@ describe('Article routes', () => {
         name: rightArticle.name,
         content: rightArticle.content,
       });
+    });
+
+    test('should return 401 if no access token provided', async () => {
+      await insertArticles([rightArticle]);
+
+      await request(app).get(`/v1/articles/${rightArticle._id}`).expect(httpStatus.UNAUTHORIZED);
     });
 
     test('should return 400 if articleId is not valid range mongo id', async () => {
@@ -159,6 +168,7 @@ describe('Article routes', () => {
     });
   });
 
+  // DELETE /v1/article/:articleId
   describe('DELETE v1/articles/:artilceId', () => {
     test('should return 200 and the article object if data is ok', async () => {
       await insertArticles([rightArticle]);
@@ -168,6 +178,12 @@ describe('Article routes', () => {
         .set('Authorization', `Bearer ${adminAccessToken}`)
         .send()
         .expect(httpStatus.NO_CONTENT);
+    });
+
+    test('should return 401 if no access token provided', async () => {
+      await insertArticles([rightArticle]);
+
+      await request(app).delete(`/v1/articles/${rightArticle._id}`).expect(httpStatus.UNAUTHORIZED);
     });
 
     test('should return 400 if articleId is not valid range mongo id', async () => {

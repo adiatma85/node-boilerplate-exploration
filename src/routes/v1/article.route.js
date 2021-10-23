@@ -1,5 +1,5 @@
 const express = require('express');
-// const auth = require('../../middlewares/auth');
+const auth = require('../../middlewares/auth');
 const validate = require('../../middlewares/validate');
 const articleValidation = require('../../validations/article.validation');
 const articleController = require('../../controllers/article.controller');
@@ -8,14 +8,14 @@ const router = express.Router();
 
 router
   .route('/')
-  .post(validate(articleValidation.createArticle), articleController.createArticle)
-  .get(validate(articleValidation.getArticles), articleController.getArticles);
+  .post(auth('createArticles'), validate(articleValidation.createArticle), articleController.createArticle)
+  .get(auth('getArticles'), validate(articleValidation.getArticles), articleController.getArticles);
 
 router
   .route('/:articleId')
-  .get(validate(articleValidation.getArticle), articleController.getArticle)
-  .patch(validate(articleValidation.updateArticle), articleController.updateArticle)
-  .delete(validate(articleValidation.deleteArticle), articleController.deleteArticle);
+  .get(auth('createArticles'), validate(articleValidation.getArticle), articleController.getArticle)
+  .patch(auth('updateArticles'), validate(articleValidation.updateArticle), articleController.updateArticle)
+  .delete(auth('deleteArticles'), validate(articleValidation.deleteArticle), articleController.deleteArticle);
 
 module.exports = router;
 
