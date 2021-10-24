@@ -1,5 +1,5 @@
 const allRoles = {
-  user: [],
+  user: ['getArticles'],
   admin: [
     // User domain
     'getUsers',

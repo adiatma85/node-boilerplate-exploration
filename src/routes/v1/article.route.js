@@ -13,7 +13,7 @@ router
 
 router
   .route('/:articleId')
-  .get(auth('createArticles'), validate(articleValidation.getArticle), articleController.getArticle)
+  .get(auth('getArticles'), validate(articleValidation.getArticle), articleController.getArticle)
   .patch(auth('updateArticles'), validate(articleValidation.updateArticle), articleController.updateArticle)
   .delete(auth('deleteArticles'), validate(articleValidation.deleteArticle), articleController.deleteArticle);
 
