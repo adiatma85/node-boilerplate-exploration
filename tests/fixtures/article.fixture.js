@@ -2,13 +2,13 @@ const mongoose = require('mongoose');
 const faker = require('faker');
 const Article = require('../../src/models/article.model');
 
-const wrongArticle = {
+const articleOne = {
   _id: mongoose.Types.ObjectId(),
   name: faker.name.findName(),
   content: faker.lorem.paragraphs(),
 };
 
-const rightArticle = {
+const articleTwo = {
   _id: mongoose.Types.ObjectId(),
   name: faker.name.findName(),
   content: faker.lorem.paragraphs(),
@@ -31,8 +31,8 @@ const insertArticles = async (articles) => {
 };
 
 module.exports = {
-  wrongArticle,
-  rightArticle,
+  articleOne,
+  articleTwo,
   articleWithPrefixNameA,
   articleWithPrefixNameZ,
   insertArticles,

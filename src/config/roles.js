@@ -2,8 +2,10 @@ const allRoles = {
   user: ['getArticles'],
   admin: [
     // User domain
+    'createUsers',
     'getUsers',
-    'manageUsers',
+    'updateUsers',
+    'deleteUsers',
 
     // Article Domain
     'createArticles',
