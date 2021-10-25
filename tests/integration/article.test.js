@@ -116,5 +116,119 @@ describe('Article Routes', () => {
     test('should return 401 error if access token is missing', async () => {
       await request(app).get('/v1/articles').send().expect(httpStatus.UNAUTHORIZED);
     });
+
+    test('should correctly apply filter on name field', async () => {
+      await insertUsers([userOne]);
+      await insertArticles([articleOne, articleTwo, articleWithPrefixNameA, articleWithPrefixNameZ]);
+
+      const res = await request(app)
+        .get('/v1/articles')
+        .set('Authorization', `Bearer ${userOneAccessToken}`)
+        .query({ name: articleOne.name })
+        .send()
+        .expect(httpStatus.OK);
+
+      expect(res.body).toEqual({
+        results: expect.anything(Array),
+        page: 1,
+        limit: 10,
+        totalPages: 1,
+        totalResults: 1,
+      });
+      expect(res.body.results).toHaveLength(1);
+      expect(res.body.results[0].id).toBe(articleOne._id.toHexString());
+    });
+
+    test('should correctly sort returned array if descending sort param is specified', async () => {
+      await insertUsers([userOne]);
+      await insertArticles([articleWithPrefixNameA, articleWithPrefixNameZ]);
+
+      const res = await request(app)
+        .get('/v1/articles')
+        .set('Authorization', `Bearer ${userOneAccessToken}`)
+        .query({ sortBy: 'name:desc' })
+        .send()
+        .expect(httpStatus.OK);
+
+      expect(res.body).toEqual({
+        results: expect.anything(Array),
+        page: 1,
+        limit: 10,
+        totalPages: 1,
+        totalResults: 2,
+      });
+      expect(res.body.results).toHaveLength(2);
+      expect(res.body.results[0].id).toBe(articleWithPrefixNameZ._id.toHexString());
+      expect(res.body.results[1].id).toBe(articleWithPrefixNameA._id.toHexString());
+    });
+
+    test('should limit returned array if limit param is specified', async () => {
+      await insertUsers([userOne]);
+      await insertArticles([articleOne, articleTwo, articleWithPrefixNameA, articleWithPrefixNameZ]);
+
+      const res = await request(app)
+        .get('/v1/articles')
+        .set('Authorization', `Bearer ${userOneAccessToken}`)
+        .query({ limit: 2 })
+        .send()
+        .expect(httpStatus.OK);
+
+      expect(res.body).toEqual({
+        results: expect.anything(Array),
+        page: 1,
+        limit: 2,
+        totalPages: 2,
+        totalResults: 4,
+      });
+      expect(res.body.results).toHaveLength(2);
+      expect(res.body.results[0].id).toBe(articleOne._id.toHexString());
+      expect(res.body.results[1].id).toBe(articleTwo._id.toHexString());
+    });
+
+    test('should correctly sort returned array if descending sort param is specified even page limitation', async () => {
+      await insertUsers([userOne]);
+      await insertArticles([articleOne, articleTwo, articleWithPrefixNameA, articleWithPrefixNameZ]);
+
+      const res = await request(app)
+        .get('/v1/articles')
+        .set('Authorization', `Bearer ${userOneAccessToken}`)
+        .query({ sortBy: '_id:desc', limit: 2 })
+        .send()
+        .expect(httpStatus.OK);
+
+      expect(res.body).toEqual({
+        results: expect.anything(Array),
+        page: 1,
+        limit: 2,
+        totalPages: 2,
+        totalResults: 4,
+      });
+      expect(res.body.results).toHaveLength(2);
+      expect(res.body.results[0].id).toBe(articleWithPrefixNameZ._id.toHexString());
+      expect(res.body.results[1].id).toBe(articleWithPrefixNameA._id.toHexString());
+    });
+
+    test('should return the correct page if page and limit param are specified', async () => {
+      await insertUsers([userOne]);
+      await insertArticles([articleOne, articleTwo, articleWithPrefixNameA, articleWithPrefixNameZ]);
+
+      const res = await request(app)
+        .get('/v1/articles')
+        .set('Authorization', `Bearer ${userOneAccessToken}`)
+        .query({ limit: 2, page: 2, sortBy: '_id:asc' })
+        .send()
+        .expect(httpStatus.OK);
+
+      expect(res.body).toEqual({
+        results: expect.anything(Array),
+        page: 2,
+        limit: 2,
+        totalPages: 2,
+        totalResults: 4,
+      });
+      expect(res.body.results).toHaveLength(2);
+      expect(res.body.results[0].id).toBe(articleWithPrefixNameA._id.toHexString());
+      expect(res.body.results[1].id).toBe(articleWithPrefixNameZ._id.toHexString());
+    });
   });
 });
