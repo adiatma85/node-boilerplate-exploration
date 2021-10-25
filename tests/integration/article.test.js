@@ -344,4 +344,74 @@ describe('Article Routes', () => {
         .expect(httpStatus.NOT_FOUND);
     });
   });
+
+  describe('PATCH /v1/articles/:articleId', () => {
+    test('should return 200 and successfully update article if data is ok', async () => {
+      await insertUsers([admin]);
+      await insertArticles([articleOne]);
+
+      const updateBody = {
+        name: faker.name.findName(),
+        content: faker.lorem.paragraphs(),
+      };
+
+      const res = await request(app)
+        .patch(`/v1/articles/${articleOne._id}`)
+        .set('Authorization', `Bearer ${adminAccessToken}`)
+        .send(updateBody)
+        .expect(httpStatus.OK);
+
+      expect(res.body).toEqual({
+        id: articleOne._id.toHexString(),
+        name: updateBody.name,
+        content: updateBody.content,
+      });
+
+      const dbArticle = await Article.findById(articleOne._id);
+      expect(dbArticle).toBeDefined();
+      expect(dbArticle).toMatchObject({ name: updateBody.name, content: updateBody.content });
+    });
+
+    test('should return 403 error if user try to edit an article', async () => {
+      await insertUsers([userOne]);
+      await insertArticles([articleOne]);
+
+      const updateBody = {
+        name: faker.name.findName(),
+        content: faker.lorem.paragraphs(),
+      };
+
+      await request(app)
+        .patch(`/v1/articles/${articleOne._id}`)
+        .set('Authorization', `Bearer ${userOneAccessToken}`)
+        .send(updateBody)
+        .expect(httpStatus.FORBIDDEN);
+    });
+
+    test('should return 401 error access token is missing', async () => {
+      await request(app).patch(`/v1/articles/${articleOne._id}`).send().expect(httpStatus.UNAUTHORIZED);
+    });
+
+    test('should return 400 error if provided article id is not valid mongo id', async () => {
+      await insertUsers([admin]);
+      await insertArticles([articleOne]);
+
+      await request(app)
+        .patch(`/v1/articles/invalidId`)
+        .set('Authorization', `Bearer ${adminAccessToken}`)
+        .send()
+        .expect(httpStatus.BAD_REQUEST);
+    });
+
+    test('should return 404 error if article not found', async () => {
+      await insertUsers([admin]);
+      await insertArticles([articleOne]);
+
+      await request(app)
+        .delete(`/v1/articles/${articleTwo._id}`)
+        .set('Authorization', `Bearer ${adminAccessToken}`)
+        .send()
+        .expect(httpStatus.NOT_FOUND);
+    });
+  });
 });
