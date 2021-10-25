@@ -2,7 +2,7 @@ const httpStatus = require('http-status');
 const pick = require('../utils/pick');
 const ApiError = require('../utils/ApiError');
 const catchAsync = require('../utils/catchAsync');
-const { articleService } = require('../services');
+const { articleService, testingUploadingImage } = require('../services');
 
 const createArticle = catchAsync(async (req, res) => {
   const article = await articleService.createArticle(req.body);
@@ -34,10 +34,27 @@ const deleteArticle = catchAsync(async (req, res) => {
   res.status(httpStatus.NO_CONTENT).send();
 });
 
+const testing = catchAsync(async (req, res) => {
+  try {
+    await testingUploadingImage(req, res);
+
+    // console.log(req.file);
+    if (req.file === undefined) {
+      return res.send(`You must select a file.`);
+    }
+
+    return res.send(`File has been uploaded.`);
+  } catch (error) {
+    // console.log(error);
+    return res.send(`Error when trying upload image: ${error}`);
+  }
+});
+
 module.exports = {
   createArticle,
   getArticles,
   getArticle,
   updateArticle,
   deleteArticle,
+  testing,
 };
