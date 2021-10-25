@@ -231,4 +231,67 @@ describe('Article Routes', () => {
       expect(res.body.results[1].id).toBe(articleWithPrefixNameZ._id.toHexString());
     });
   });
+
+  describe('GET /v1/articles/:articleId', () => {
+    test('admin can access particular article and should return 200 and the article object if data is ok', async () => {
+      await insertUsers([admin]);
+      await insertArticles([articleOne, articleTwo]);
+
+      const res = await request(app)
+        .get(`/v1/articles/${articleOne._id}`)
+        .set('Authorization', `Bearer ${adminAccessToken}`)
+        .send()
+        .expect(httpStatus.OK);
+
+      expect(res.body).toEqual({
+        id: articleOne._id.toHexString(),
+        name: articleOne.name,
+        content: articleOne.content,
+      });
+    });
+
+    test('user can access particular article and should return 200 and the article object if data is ok', async () => {
+      await insertUsers([userOne]);
+      await insertArticles([articleOne, articleTwo]);
+
+      const res = await request(app)
+        .get(`/v1/articles/${articleOne._id}`)
+        .set('Authorization', `Bearer ${userOneAccessToken}`)
+        .send()
+        .expect(httpStatus.OK);
+
+      expect(res.body).toEqual({
+        id: articleOne._id.toHexString(),
+        name: articleOne.name,
+        content: articleOne.content,
+      });
+    });
+
+    test('should return 401 error if access token is missing', async () => {
+      await insertArticles([articleOne, articleTwo]);
+      await request(app).get(`/v1/articles/${articleOne._id}`).send().expect(httpStatus.OK);
+    });
+
+    test('should return 400 error if articleId is not a valid mongo id', async () => {
+      await insertUsers([userOne]);
+      await insertArticles([articleOne, articleTwo]);
+
+      await request(app)
+        .get(`/v1/articles/invalidId`)
+        .set('Authorization', `Bearer ${userOneAccessToken}`)
+        .send()
+        .expect(httpStatus.BAD_REQUEST);
+    });
+
+    test('should return 404 error if article not found', async () => {
+      await insertUsers([userOne]);
+      await insertArticles([articleOne, articleTwo]);
+
+      await request(app)
+        .get(`/v1/articles/${articleWithPrefixNameA._id}`)
+        .set('Authorization', `Bearer ${userOneAccessToken}`)
+        .send()
+        .expect(httpStatus.NOT_FOUND);
+    });
+  });
 });
