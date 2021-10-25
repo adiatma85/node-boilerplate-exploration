@@ -408,7 +408,7 @@ describe('Article Routes', () => {
       await insertArticles([articleOne]);
 
       await request(app)
-        .delete(`/v1/articles/${articleTwo._id}`)
+        .patch(`/v1/articles/${articleTwo._id}`)
         .set('Authorization', `Bearer ${adminAccessToken}`)
         .send()
         .expect(httpStatus.NOT_FOUND);
