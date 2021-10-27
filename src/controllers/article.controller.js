@@ -1,12 +1,18 @@
 const httpStatus = require('http-status');
 const { uploader } = require('cloudinary').v2;
 const { dataUri } = require('../middlewares/multer');
+const cloudinaryUpload = require('../utils/cloudinary');
 const pick = require('../utils/pick');
 const ApiError = require('../utils/ApiError');
 const catchAsync = require('../utils/catchAsync');
-const { articleService, testingUploadingImage } = require('../services');
+const { articleService } = require('../services');
 
 const createArticle = catchAsync(async (req, res) => {
+  if (req.file) {
+    const file = dataUri(req).content;
+    const imageUrl = await cloudinaryUpload(file);
+    req.body.image_url = imageUrl;
+  }
   const article = await articleService.createArticle(req.body);
   res.status(httpStatus.CREATED).send(article);
 });
@@ -36,28 +42,7 @@ const deleteArticle = catchAsync(async (req, res) => {
   res.status(httpStatus.NO_CONTENT).send();
 });
 
-const testing = catchAsync(async (req, res) => {
-  try {
-    await testingUploadingImage.uploadFilesMiddleware(req, res);
-
-    // console.log(req.file);
-    if (req.file === undefined) {
-      return res.send(`You must select a file.`);
-    }
-
-    return res.send(`File has been uploaded.`);
-  } catch (error) {
-    // console.log(error);
-    return res.send(`Error when trying upload image: ${error}`);
-  }
-});
-
 const testingCloudinary = catchAsync(async (req, res) => {
-  // await testingUploadingImage.cloudinaryUpdate(req, res);
-  // console.log(req.file);
-  // res.send({
-  //   file: req.file,
-  // });
   if (req.file) {
     const file = dataUri(req).content;
 
@@ -89,6 +74,5 @@ module.exports = {
   getArticle,
   updateArticle,
   deleteArticle,
-  testing,
   testingCloudinary,
 };

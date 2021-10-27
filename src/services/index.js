@@ -3,6 +3,3 @@ module.exports.emailService = require('./email.service');
 module.exports.tokenService = require('./token.service');
 module.exports.userService = require('./user.service');
 module.exports.articleService = require('./article.services');
-
-// For testing purposes
-module.exports.testingUploadingImage = require('./upload-image.services');

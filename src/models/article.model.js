@@ -13,6 +13,11 @@ const articleSchema = mongoose.Schema(
       required: true,
       trim: true,
     },
+    image_url: {
+      type: String,
+      required: false,
+      trim: true,
+    },
   },
   {
     timestamps: true,

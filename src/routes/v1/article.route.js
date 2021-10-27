@@ -11,8 +11,6 @@ router
   .post(auth('createArticles'), validate(articleValidation.createArticle), articleController.createArticle)
   .get(auth('getArticles'), validate(articleValidation.getArticles), articleController.getArticles);
 
-router.route('/testing').post(articleController.testing);
-
 router.route('/testing-cloudinary').post(articleController.testingCloudinary);
 
 router
