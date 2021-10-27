@@ -1,3 +1,4 @@
+// Global upload for cloudinary services
 const { uploader } = require('cloudinary').v2;
 const httpStatus = require('http-status');
 const ApiError = require('./ApiError');

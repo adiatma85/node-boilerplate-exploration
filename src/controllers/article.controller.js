@@ -1,5 +1,4 @@
 const httpStatus = require('http-status');
-const { uploader } = require('cloudinary').v2;
 const { dataUri } = require('../middlewares/multer');
 const cloudinaryUpload = require('../utils/cloudinary');
 const pick = require('../utils/pick');
@@ -42,37 +41,10 @@ const deleteArticle = catchAsync(async (req, res) => {
   res.status(httpStatus.NO_CONTENT).send();
 });
 
-const testingCloudinary = catchAsync(async (req, res) => {
-  if (req.file) {
-    const file = dataUri(req).content;
-
-    return uploader
-      .upload(file)
-      .then((result) => {
-        const image = result.url;
-        return res.status(200).json({
-          message: 'The image is uploaded',
-          data: {
-            image,
-          },
-        });
-      })
-      .catch((err) =>
-        res.status(400).json({
-          messge: 'someting went wrong while processing your request',
-          data: {
-            err,
-          },
-        })
-      );
-  }
-});
-
 module.exports = {
   createArticle,
   getArticles,
   getArticle,
   updateArticle,
   deleteArticle,
-  testingCloudinary,
 };

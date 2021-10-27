@@ -1,4 +1,5 @@
-const { config, uploader } = require('cloudinary').v2;
+// Cloudinary special config
+const { config } = require('cloudinary').v2;
 const { cloudinary } = require('./config');
 
 const cloudinaryConfig = () =>
@@ -10,5 +11,4 @@ const cloudinaryConfig = () =>
 
 module.exports = {
   cloudinaryConfig,
-  uploader,
 };

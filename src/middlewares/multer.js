@@ -1,3 +1,4 @@
+// Global middleware for multer to detect image file
 const multer = require('multer');
 const Datauri = require('datauri/parser');
 const path = require('path');
