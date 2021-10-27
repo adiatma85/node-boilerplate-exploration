@@ -6,7 +6,8 @@ const compression = require('compression');
 const cors = require('cors');
 const passport = require('passport');
 const httpStatus = require('http-status');
-const multerMiddleware = require('./middlewares/multer');
+const { multerUploads } = require('./middlewares/multer');
+// const { cloudinaryConfig } = require('./config/cloudinary');
 const config = require('./config/config');
 const morgan = require('./config/morgan');
 const { jwtStrategy } = require('./config/passport');
@@ -29,7 +30,10 @@ app.use(helmet());
 app.use(express.json());
 
 // parse file with multer
-app.use(multerMiddleware);
+app.use(multerUploads);
+
+// cloudinary config
+// app.use(cloudinaryConfig);
 
 // parse urlencoded request body
 app.use(express.urlencoded({ extended: true }));

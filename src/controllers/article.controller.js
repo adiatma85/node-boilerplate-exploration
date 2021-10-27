@@ -1,4 +1,6 @@
 const httpStatus = require('http-status');
+const { uploader } = require('cloudinary').v2;
+const { dataUri } = require('../middlewares/multer');
 const pick = require('../utils/pick');
 const ApiError = require('../utils/ApiError');
 const catchAsync = require('../utils/catchAsync');
@@ -52,10 +54,33 @@ const testing = catchAsync(async (req, res) => {
 
 const testingCloudinary = catchAsync(async (req, res) => {
   // await testingUploadingImage.cloudinaryUpdate(req, res);
-  console.log(req.file);
-  res.send({
-    file: req.file.filename,
-  });
+  // console.log(req.file);
+  // res.send({
+  //   file: req.file,
+  // });
+  if (req.file) {
+    const file = dataUri(req).content;
+
+    return uploader
+      .upload(file)
+      .then((result) => {
+        const image = result.url;
+        return res.status(200).json({
+          message: 'The image is uploaded',
+          data: {
+            image,
+          },
+        });
+      })
+      .catch((err) =>
+        res.status(400).json({
+          messge: 'someting went wrong while processing your request',
+          data: {
+            err,
+          },
+        })
+      );
+  }
 });
 
 module.exports = {
