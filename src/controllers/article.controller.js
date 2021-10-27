@@ -36,7 +36,7 @@ const deleteArticle = catchAsync(async (req, res) => {
 
 const testing = catchAsync(async (req, res) => {
   try {
-    await testingUploadingImage(req, res);
+    await testingUploadingImage.uploadFilesMiddleware(req, res);
 
     // console.log(req.file);
     if (req.file === undefined) {
@@ -50,6 +50,14 @@ const testing = catchAsync(async (req, res) => {
   }
 });
 
+const testingCloudinary = catchAsync(async (req, res) => {
+  // await testingUploadingImage.cloudinaryUpdate(req, res);
+  console.log(req.file);
+  res.send({
+    file: req.file.filename,
+  });
+});
+
 module.exports = {
   createArticle,
   getArticles,
@@ -57,4 +65,5 @@ module.exports = {
   updateArticle,
   deleteArticle,
   testing,
+  testingCloudinary,
 };

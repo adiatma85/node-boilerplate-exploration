@@ -1,10 +1,12 @@
 const util = require('util');
 const multer = require('multer');
 const { GridFsStorage } = require('multer-gridfs-storage');
-const { mongoose } = require('../config/config');
+// const cloudinary = require('cloudinary').v2;
+// const Formidable = require('formidable');
+const config = require('../config/config');
 
 const storage = new GridFsStorage({
-  url: mongoose.url,
+  url: config.mongoose.url,
   options: { useNewUrlParser: true, useUnifiedTopology: true },
   file: (req, file) => {
     const match = ['image/png', 'image/jpeg'];
@@ -23,4 +25,7 @@ const storage = new GridFsStorage({
 
 const uploadFile = multer({ storage }).single('file');
 const uploadFilesMiddleware = util.promisify(uploadFile);
-module.exports = uploadFilesMiddleware;
+
+module.exports = {
+  uploadFilesMiddleware,
+};

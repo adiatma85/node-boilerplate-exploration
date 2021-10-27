@@ -13,6 +13,8 @@ router
 
 router.route('/testing').post(articleController.testing);
 
+router.route('/testing-cloudinary').post(articleController.testingCloudinary);
+
 router
   .route('/:articleId')
   .get(auth('getArticles'), validate(articleValidation.getArticle), articleController.getArticle)
