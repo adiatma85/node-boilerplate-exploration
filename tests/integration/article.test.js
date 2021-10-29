@@ -24,6 +24,7 @@ describe('Article Routes', () => {
       newArticle = {
         name: faker.name.findName(),
         content: faker.lorem.paragraphs(),
+        image: faker.image.image(),
       };
     });
 
@@ -40,6 +41,7 @@ describe('Article Routes', () => {
         id: expect.anything(),
         name: newArticle.name,
         content: newArticle.content,
+        // image_url: expect.anything(),
       });
 
       const dbArticle = await Article.findById(res.body.id);

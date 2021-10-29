@@ -1,6 +1,7 @@
 const express = require('express');
 const auth = require('../../middlewares/auth');
 const validate = require('../../middlewares/validate');
+// const { multerUpload } = require('../../middlewares/multer');
 const articleValidation = require('../../validations/article.validation');
 const articleController = require('../../controllers/article.controller');
 
@@ -8,7 +9,12 @@ const router = express.Router();
 
 router
   .route('/')
-  .post(auth('createArticles'), validate(articleValidation.createArticle), articleController.createArticle)
+  .post(
+    auth('createArticles'),
+    validate(articleValidation.createArticle),
+    // multerUpload('image'),
+    articleController.createArticle
+  )
   .get(auth('getArticles'), validate(articleValidation.getArticles), articleController.getArticles);
 
 router

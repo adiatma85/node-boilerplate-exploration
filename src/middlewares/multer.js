@@ -9,4 +9,6 @@ const dUri = new Datauri();
 
 const dataUri = (req) => dUri.format(path.extname(req.file.originalname).toString(), req.file.buffer);
 
-module.exports = { multerUploads, dataUri };
+const multerUpload = (fieldName) => multer({ storage }).single(fieldName);
+
+module.exports = { multerUploads, dataUri, multerUpload };

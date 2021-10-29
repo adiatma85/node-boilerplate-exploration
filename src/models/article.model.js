@@ -13,7 +13,7 @@ const articleSchema = mongoose.Schema(
       required: true,
       trim: true,
     },
-    image_url: {
+    image: {
       type: String,
       required: false,
       trim: true,
@@ -26,6 +26,14 @@ const articleSchema = mongoose.Schema(
 
 articleSchema.plugin(toJSON);
 articleSchema.plugin(paginate);
+
+articleSchema.pre('save', async function (next) {
+  const article = this;
+  if (article.isModified('image')) {
+    article.image = 'link to image';
+  }
+  next();
+});
 
 const Article = mongoose.model('Article', articleSchema);
 
