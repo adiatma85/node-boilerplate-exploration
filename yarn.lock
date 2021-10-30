@@ -676,7 +676,7 @@
   integrity sha512-jiJUhbdsK+5C4zhPZNnyA3wRI01dEc6a2GhcQ9qI38DyIk+S+C8iC3fGjcjUbt/viLYKPjlAaE+hcT2/JMQPXw==
   dependencies:
     async "^2.6.3"
-    axios "^0.21.0"
+    axios "^0.24.0"
     debug "~4.3.1"
     eventemitter2 "^6.3.1"
     ws "^7.0.0"
