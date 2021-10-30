@@ -27,14 +27,6 @@ const articleSchema = mongoose.Schema(
 articleSchema.plugin(toJSON);
 articleSchema.plugin(paginate);
 
-articleSchema.pre('save', async function (next) {
-  const article = this;
-  if (article.isModified('image')) {
-    article.image = 'link to image';
-  }
-  next();
-});
-
 const Article = mongoose.model('Article', articleSchema);
 
 module.exports = Article;

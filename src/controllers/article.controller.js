@@ -8,9 +8,9 @@ const { articleService } = require('../services');
 
 const createArticle = catchAsync(async (req, res) => {
   if (req.file) {
-    const file = dataUri(req).content;
-    const imageUrl = await cloudinaryUpload(file);
-    req.body.image_url = imageUrl;
+    const image = await dataUri(req).content;
+    const imageUrl = await cloudinaryUpload(image);
+    req.body.image = imageUrl;
   }
   const article = await articleService.createArticle(req.body);
   res.status(httpStatus.CREATED).send(article);
