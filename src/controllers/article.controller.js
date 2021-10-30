@@ -1,10 +1,17 @@
 const httpStatus = require('http-status');
+const { dataUri } = require('../middlewares/multer');
+const cloudinaryUpload = require('../utils/cloudinary');
 const pick = require('../utils/pick');
 const ApiError = require('../utils/ApiError');
 const catchAsync = require('../utils/catchAsync');
 const { articleService } = require('../services');
 
 const createArticle = catchAsync(async (req, res) => {
+  if (req.file) {
+    const image = await dataUri(req).content;
+    const imageUrl = await cloudinaryUpload(image);
+    req.body.image = imageUrl;
+  }
   const article = await articleService.createArticle(req.body);
   res.status(httpStatus.CREATED).send(article);
 });

@@ -1,6 +1,7 @@
 const express = require('express');
 const auth = require('../../middlewares/auth');
 const validate = require('../../middlewares/validate');
+const { multerUpload } = require('../../middlewares/multer');
 const articleValidation = require('../../validations/article.validation');
 const articleController = require('../../controllers/article.controller');
 
@@ -8,14 +9,24 @@ const router = express.Router();
 
 router
   .route('/')
-  .post(auth('createArticles'), validate(articleValidation.createArticle), articleController.createArticle)
-  .get(auth('getArticles'), validate(articleValidation.getArticles), articleController.getArticles);
+  .get(auth('getArticles'), validate(articleValidation.getArticles), articleController.getArticles)
+  .post(
+    auth('createArticles'),
+    multerUpload.single('image'),
+    validate(articleValidation.createArticle),
+    articleController.createArticle
+  );
 
 router
   .route('/:articleId')
   .get(auth('getArticles'), validate(articleValidation.getArticle), articleController.getArticle)
-  .patch(auth('updateArticles'), validate(articleValidation.updateArticle), articleController.updateArticle)
-  .delete(auth('deleteArticles'), validate(articleValidation.deleteArticle), articleController.deleteArticle);
+  .delete(auth('deleteArticles'), validate(articleValidation.deleteArticle), articleController.deleteArticle)
+  .patch(
+    auth('updateArticles'),
+    validate(articleValidation.updateArticle),
+    multerUpload.single('image'),
+    articleController.updateArticle
+  );
 
 module.exports = router;
 

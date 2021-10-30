@@ -1,4 +1,5 @@
 const request = require('supertest');
+// const axios = require('axios');
 const faker = require('faker');
 const httpStatus = require('http-status');
 const app = require('../../src/app');
@@ -27,7 +28,7 @@ describe('Article Routes', () => {
       };
     });
 
-    test('should return 201 and successfully create new article if data is ok', async () => {
+    test('should return 201 and successfully create new article if data is ok even there is no image attachment', async () => {
       await insertUsers([admin]);
 
       const res = await request(app)
@@ -40,6 +41,32 @@ describe('Article Routes', () => {
         id: expect.anything(),
         name: newArticle.name,
         content: newArticle.content,
+        // image_url: expect.anything(),
+      });
+
+      const dbArticle = await Article.findById(res.body.id);
+      expect(dbArticle).toBeDefined();
+      expect(dbArticle).toMatchObject({ name: newArticle.name, content: newArticle.content });
+    });
+
+    test('should return 201 and successfully create new article if data is ok even with attachment', async () => {
+      await insertUsers([admin]);
+      // const randomImageArrayBuffer = await axios.get(faker.image.animals(), { responType: 'arraybuffer' });
+      // const buffer = Buffer.from(randomImageArrayBuffer.data, 'utf-8');
+
+      const res = await request(app)
+        .post('/v1/articles')
+        .set('Authorization', `Bearer ${adminAccessToken}`)
+        .field('name', newArticle.name)
+        .field('content', newArticle.content)
+        // .attach('image', buffer)
+        .expect(httpStatus.CREATED);
+
+      expect(res.body).toEqual({
+        id: expect.anything(),
+        name: newArticle.name,
+        content: newArticle.content,
+        // image: expect.anything(),
       });
 
       const dbArticle = await Article.findById(res.body.id);
