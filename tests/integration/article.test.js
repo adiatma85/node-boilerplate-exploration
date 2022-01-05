@@ -12,6 +12,7 @@ const {
   articleWithPrefixNameA,
   articleWithPrefixNameZ,
   insertArticles,
+  imageUnder1MbFilePath,
 } = require('../fixtures/article.fixture');
 const { adminAccessToken, userOneAccessToken } = require('../fixtures/token.fixture');
 
@@ -59,14 +60,14 @@ describe('Article Routes', () => {
         .set('Authorization', `Bearer ${adminAccessToken}`)
         .field('name', newArticle.name)
         .field('content', newArticle.content)
-        // .attach('image', buffer)
+        .attach('image', imageUnder1MbFilePath)
         .expect(httpStatus.CREATED);
 
       expect(res.body).toEqual({
         id: expect.anything(),
         name: newArticle.name,
         content: newArticle.content,
-        // image: expect.anything(),
+        image: expect.anything(),
       });
 
       const dbArticle = await Article.findById(res.body.id);

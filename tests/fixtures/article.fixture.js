@@ -30,10 +30,13 @@ const insertArticles = async (articles) => {
   await Article.insertMany(articles.map((article) => ({ ...article })));
 };
 
+const imageUnder1MbFilePath = './tests/image/under_1Mb.jpg';
+
 module.exports = {
   articleOne,
   articleTwo,
   articleWithPrefixNameA,
   articleWithPrefixNameZ,
   insertArticles,
+  imageUnder1MbFilePath,
 };
